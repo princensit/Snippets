@@ -27,7 +27,7 @@ dest="KQR"
 checked="none"
 train_numbers="12802 12816 12876 12312 12382 12818 22812 22824"
 user_agent="Chrome/26.0.1410.63"
-other="lccp_class1=SL&lccp_quota=CK&submit=Please+Wait...&lccp_classopt=ZZ&lccp_class2=ZZ&lccp_class3=ZZ&lccp_class4=ZZ&lccp_class5=ZZ&lccp_class6=ZZ&lccp_class7=ZZ&lccp_class6=ZZ&lccp_class7=ZZ"
+other="lccp_class1=SL&lccp_quota=CK&submit=Please+Wait...&lccp_classopt=ZZ&lccp_class2=ZZ&lccp_class3=ZZ&lccp_class4=ZZ&lccp_class5=ZZ&lccp_class6=ZZ&lccp_class7=ZZ"
 
 if [ -n "${array[day]}" ]; then
         day="${array[day]}"
@@ -101,7 +101,7 @@ if [ ! -z "${query_string}" ]; then
     echo "</TR>"
 
     # fetch train numbers between two station codes
-    if echo "true" | grep -i "^${array[update]}$" > /dev/null; then
+    if echo "on" | grep -i "^${array[update]}$" > /dev/null; then
         train_numbers=`curl -s --data "lccp_src_stncode=${src}&lccp_dstn_stncode=${dest}&lccp_classopt=SL&lccp_day=${day}&lccp_month=${month}&submit2=Get+Trains" http://www.indianrail.gov.in/cgi_bin/inet_srcdest_cgi_date.cgi | grep -Po '<INPUT TYPE=\"RADIO\" NAME=\"lccp_trndtl\" VALUE="\K.?.?.?.?.?' | sort`
     fi
 
