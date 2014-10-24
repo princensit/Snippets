@@ -1,7 +1,7 @@
 #!/bin/bash
 # @author Prince Raj
 # @since 2013-05-12
-# @modified 2014-03-16
+# @modified 2014-10-24
 
 # add following two lines before outputting data to the web browser from shell script
 echo "Content-type: text/html"
@@ -25,7 +25,7 @@ month=`date +%m`
 src="NDLS"
 dest="KQR"
 checked="none"
-train_numbers="12802 12816 12876 12312 12382 12818 22812 22824"
+train_numbers="12802 12818 12826"
 user_agent="Chrome/26.0.1410.63"
 other="lccp_class1=SL&lccp_quota=CK&submit=Please+Wait...&lccp_classopt=ZZ&lccp_class2=ZZ&lccp_class3=ZZ&lccp_class4=ZZ&lccp_class5=ZZ&lccp_class6=ZZ&lccp_class7=ZZ"
 
@@ -102,12 +102,12 @@ if [ ! -z "${query_string}" ]; then
 
     # fetch train numbers between two station codes
     if echo "on" | grep -i "^${array[update]}$" > /dev/null; then
-        train_numbers=`curl -s --data "lccp_src_stncode=${src}&lccp_dstn_stncode=${dest}&lccp_classopt=SL&lccp_day=${day}&lccp_month=${month}&submit2=Get+Trains" http://www.indianrail.gov.in/cgi_bin/inet_srcdest_cgi_date.cgi | grep -Po '<INPUT TYPE=\"RADIO\" NAME=\"lccp_trndtl\" VALUE="\K.?.?.?.?.?' | sort`
+        train_numbers=`curl -s -H 'Referer: http://www.indianrail.gov.in/know_Station_Code.html' --data "lccp_src_stncode=${src}&lccp_dstn_stncode=${dest}&lccp_classopt=SL&lccp_day=${day}&lccp_month=${month}&submit2=Get+Trains" http://www.indianrail.gov.in/cgi_bin/inet_srcdest_cgi_date.cgi | grep -Po '<INPUT TYPE=\"RADIO\" NAME=\"lccp_trndtl\" VALUE="\K.?.?.?.?.?' | sort`
     fi
 
     # fetch tatkal seat availability
     for x in $train_numbers; do
-        result=`curl -A ${user_agent} -s --data "lccp_trnno=${x}&lccp_day=${day}&lccp_month=${month}&lccp_srccode=${src}&lccp_dstncode=${dest}&${other}" http://www.indianrail.gov.in/cgi_bin/inet_accavl_cgi.cgi | egrep -m9 "^<TD class=\"table_border_both" | sed -e '3,6d'`
+        result=`curl -A ${user_agent} -s -H 'Referer: http://www.indianrail.gov.in/seat_Avail.html' --data "lccp_trnno=${x}&lccp_day=${day}&lccp_month=${month}&lccp_srccode=${src}&lccp_dstncode=${dest}&${other}" http://www.indianrail.gov.in/cgi_bin/inet_accavl_cgi.cgi | egrep -m9 "^<TD class=\"table_border_both" | sed -e '3,6d'`
         if [ -n "$result" ]; then
             echo "<TR>"
             echo "$result"
@@ -128,3 +128,4 @@ if [ ! -z "${query_string}" ]; then
 fi
 
 echo "</BODY></HTML>"
+
